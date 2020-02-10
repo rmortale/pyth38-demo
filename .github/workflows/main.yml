@@ -1,0 +1,27 @@
+on: [push]
+
+jobs:
+  aws_sam:
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@master
+
+      - name: sam build
+        uses: youyo/aws-sam-action/python3.8@master
+        with:
+          sam_command: build
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: eu-west-1
+
+      - name: sam deploy
+        uses: youyo/aws-sam-action/python3.8@master
+        with:
+          sam_command: 'deploy --stack-name pyth38-demo --s3-bucket sam-code-eu-west-1-601912882130 --capabilities CAPABILITY_IAM --no-fail-on-empty-changeset'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: eu-west-1
